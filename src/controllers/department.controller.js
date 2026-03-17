@@ -1,6 +1,4 @@
 import { asyncHandler } from "../utils/asyncHandler.js"
-import { apiError } from "../utils/apiError.js";
-import { apiResponse } from "../utils/apiResponse.js";
 import { Department } from "../models/department.model.js";
 
 const addDepartment = asyncHandler(async (req, res) => {
@@ -37,7 +35,46 @@ const addDepartment = asyncHandler(async (req, res) => {
         });
     }
 
-    return res.status(201).json({ ok: true, message: "Department created successfully!"});
-})
+    return res.status(201).json({ ok: true, message: "Department created successfully!" });
+});
 
-export { addDepartment }
+const getAllDepartments = asyncHandler(async (req, res) => {
+    const departments = await Department.find();
+
+    res.status(200).json({
+        ok: true,
+        data: departments,
+    });
+});
+
+const updateDepartment = asyncHandler(async (req, res) => {
+});
+
+const deleteDepartment = asyncHandler(async (req, res) => {
+
+    try {
+        const { deptId } = req.body;
+
+        const deleted = await Department.findByIdAndDelete(deptId);
+
+        if (!deleted) {
+            return res.status(404).json({
+                message: "Department not found",
+                ok: false
+            });
+        }
+
+        res.status(200).json({
+            message: "Department deleted successfully",
+            ok: true
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            ok: true
+        });
+    }
+});
+
+export { addDepartment, getAllDepartments, updateDepartment, deleteDepartment }
