@@ -1,4 +1,4 @@
-import express from "express"
+import express, { application } from "express"
 import cookieParser from "cookie-parser"
 import cors from "cors"
 
@@ -11,5 +11,9 @@ server.use(cors({
 server.use(express.json({limit: "16kb"}))
 server.use(express.urlencoded({extended: true, limit: "16kb"}))
 server.use(cookieParser())
+
+import deptRouter from "./routes/department.routes.js"
+
+server.use("/api/v1/dept/", deptRouter)
 
 export {server}
