@@ -48,6 +48,44 @@ const getAllDepartments = asyncHandler(async (req, res) => {
 });
 
 const updateDepartment = asyncHandler(async (req, res) => {
+    try {
+        const { deptId, deptName } = req.body;
+
+        if (deptName?.trim() === "") {
+            return res.status(201).json({
+                ok: false,
+                message: "Department name is required!",
+            });
+        }
+
+        const deptExists = await Department.exists({
+            deptName
+        })
+
+        if (deptExists) {
+            return res.status(201).json({
+                ok: false,
+                message: "Department already exists!",
+            });
+        }
+
+        const updatedDept = await Department.findByIdAndUpdate(
+            deptId,
+            { deptName: deptName },
+            { runValidators: true }
+        );
+
+        if (!updatedDept) {
+            return res.status(404).json({ message: "Department not found!" });
+        }
+
+        res.json({ ok: true, message: "Department updated successfully!" });
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            ok: true
+        });
+    }
 });
 
 const deleteDepartment = asyncHandler(async (req, res) => {
