@@ -13,7 +13,9 @@ server.use(express.urlencoded({extended: true, limit: "16kb"}))
 server.use(cookieParser())
 
 import deptRouter from "./routes/department.routes.js"
+import roleRouter from "./routes/role.routes.js"
 
 server.use("/api/v1/dept/", deptRouter)
+server.use("/api/v1/role/", roleRouter)
 
 export {server}

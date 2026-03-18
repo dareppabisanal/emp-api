@@ -76,7 +76,7 @@ const updateDepartment = asyncHandler(async (req, res) => {
         );
 
         if (!updatedDept) {
-            return res.status(404).json({ message: "Department not found!" });
+            return res.status(201).json({ message: "Department not found!" });
         }
 
         res.json({ ok: true, message: "Department updated successfully!" });
@@ -96,7 +96,7 @@ const deleteDepartment = asyncHandler(async (req, res) => {
         const deleted = await Department.findByIdAndDelete(deptId);
 
         if (!deleted) {
-            return res.status(404).json({
+            return res.status(201).json({
                 message: "Department not found",
                 ok: false
             });
