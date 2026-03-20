@@ -57,4 +57,82 @@ const getAllRoles = asyncHandler(async (req, res) => {
     });
 });
 
-export { addRole, getAllRoles }
+const deleteRole = asyncHandler(async (req, res) => {
+
+    try {
+        const { roleId } = req.body;
+
+        const deleted = await Role.findByIdAndDelete(roleId);
+
+        if (!deleted) {
+            return res.status(201).json({
+                message: "Role not found",
+                ok: false
+            });
+        }
+
+        res.status(200).json({
+            message: "Role deleted successfully",
+            ok: true
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            ok: true
+        });
+    }
+});
+
+const updateRole = asyncHandler(async (req, res) => {
+    try {
+        const { roleId, roleName, deptId } = req.body;
+
+        if (!deptId) {
+            return res.status(201).json({
+                ok: false,
+                message: "Department is required!",
+            });
+        }
+
+        if (roleName?.trim() === "") {
+            return res.status(201).json({
+                ok: false,
+                message: "Role name is required!",
+            });
+        }
+
+        const roleExists = await Role.exists({
+            departmentId: deptId,
+            roleName: roleName
+        })
+
+        if (roleExists) {
+            return res.status(201).json({
+                ok: false,
+                message: "Role already exists!",
+            });
+        }
+
+        const updatedRole = await Role.findByIdAndUpdate(
+            roleId,
+            { departmentId: deptId },
+            { roleName: roleName },
+            { runValidators: true }
+        );
+
+        if (!updatedRole) {
+            return res.status(201).json({ message: "Role not found!" });
+        }
+
+        res.json({ ok: true, message: "Role updated successfully!" });
+
+    } catch (err) {
+        res.status(500).json({
+            message: err.message,
+            ok: true
+        });
+    }
+});
+
+export { addRole, getAllRoles, deleteRole, updateRole }

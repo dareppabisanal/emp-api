@@ -39,7 +39,7 @@ const addDepartment = asyncHandler(async (req, res) => {
 });
 
 const getAllDepartments = asyncHandler(async (req, res) => {
-    const departments = await Department.find();
+    const departments = await Department.find().sort({ deptName: 1 });;
 
     res.status(200).json({
         ok: true,

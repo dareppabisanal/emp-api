@@ -16,7 +16,7 @@ const departmentSchema = new Schema(
     }
 );
 
-departmentSchema.pre("findOneAndDelete", async function (next) {
+departmentSchema.pre("findOneAndDelete", async function () {
   const doc = await this.model.findOne(this.getFilter());
 
   const roleExists = await Role.exists({
@@ -26,8 +26,6 @@ departmentSchema.pre("findOneAndDelete", async function (next) {
   if (roleExists) {
     throw new Error("Cannot delete: roles exist");
   }
-
-  next();
 });
 
 export const Department = mongoose.model("Department", departmentSchema);
